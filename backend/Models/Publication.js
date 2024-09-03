@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/mysqlConnection'); // Correct import
-const User = require('./userModels')
+const User = require('./userModels');
+const Department = require('./departmentmodel');
 
 const Publication = sequelize.define('Publication', {
   articletype: { type: DataTypes.STRING },
@@ -29,6 +30,13 @@ targetRole: {
   type: DataTypes.STRING, // Adjust the type if needed
   allowNull: false,
 },
+departmentId: {
+  type: DataTypes.INTEGER,
+  references: {
+    model: Department,
+    key: 'id'
+  }
+}
   // supervisedBy: {
   //   type: DataTypes.INTEGER,
   //   references: { model: User, key: 'id' }

@@ -28,7 +28,12 @@ const login = async (req, res) => {
     console.log("Password matches. Generating token...");
     // Generate a JWT token
     const token = jwt.sign(
-      { id: user.id, role: user.role },
+      { 
+        id: user.id,
+        role: user.role,
+        name: user.name,
+        departmentId: user.departmentId,
+       },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
@@ -41,4 +46,45 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = login;
+// Generate JWT Token for Impersonation
+const generateToken = (user) => {
+  return jwt.sign(
+    { 
+      id: user.id,
+      role: user.role,
+      name: user.name,
+      departmentId: user.departmentId,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
+};
+
+const impersonateUser = async (req, res) => {
+  try {
+    const {userId} = req.params;
+    const { user } = req;
+
+    const targetUser = await User.findOne({ where: { id: userId }});
+
+
+    if (!targetUser) {
+      return res.status(404).json({ message: 'User not found'});
+
+    }
+    if (user.departmentId !== targetUser.departmentId && user.role !== 'admin') {
+      return res.status(403).json({ message: 'Cannot impersonate user from a different department'});
+    }
+
+    const token = generateToken(targetUser);
+
+    return res.status(200).json({ token, message: `you are now logged in as ${targetUser.name}`})
+  } catch (err) {
+    return res.status(500).json({ message: err.message})
+  }
+}
+
+
+module.exports = {login, impersonateUser}

@@ -1,11 +1,19 @@
 // config/role.js
 const allowedRoles = {
-    admin: ['admin', 'manager', 'facultyHead', 'deptHead', 'researcher'],
-    manager: ['manager', 'facultyHead', 'deptHead', 'researcher'],
-    facultyHead: ['facultyHead', 'deptHead', 'researcher'],
-    deptHead: ['deptHead', 'researcher'],
+    admin: ['admin', 'manager', 'dean', 'chairperson', 'researcher'],
+    manager: ['manager', 'dean', 'chairperson', 'researcher'],
+    dean: ['dean', 'chairperson', 'researcher'],
+    chairperson: ['chairperson', 'researcher'],
     researcher: ['researcher']
   };
+
+
+  const roleHierarchy = {
+    admin: ['manager', 'dean', 'chairperson', 'researcher'],
+    manager: ['dean', 'chairperson', 'researcher'],
+    dean: ['chairperson', 'researcher'],
+    chairperson: ['researcher']
+};
   
-module.exports =  allowedRoles;
+module.exports =  {allowedRoles, roleHierarchy}
   

@@ -14,10 +14,10 @@ const canCreatePublicationFor = (creatorRole, targetRole) => {
 const createPublication = async (req, res) => {
     try {
       const { user } = req;
-      const { role: userRole } = user;
-      const { targetRole, ...publicationData } = req.body;
+      const { role: userRole, departmentId: userDepartmentId } = user;
+      const { targetRole, departmentId, ...publicationData } = req.body;
 
-      if (!targetRole) {
+      if (!targetRole || !departmentId) {
         return res.status(400).json({ message: 'Target role is required'});
       }
 

@@ -2,7 +2,9 @@
 
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/mysqlConnection'); // Import the sequelize instance
-const bcrypt = require('bcrypt')
+
+const bcrypt = require('bcrypt');
+const Department = require('./departmentmodel');
 
 // Define the User model
 const User = sequelize.define('User', {
@@ -25,16 +27,25 @@ const User = sequelize.define('User', {
         allowNull: false
     },
     role: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.ENUM('admin', 'manager', 'dean', 'chairperson', 'researcher'),
+        allowNull: false
     },
-    department: {
-        type: DataTypes.STRING,
+    departmentId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Department,
+            key: 'id'
+        }
     }
+    // department: {
+    //     type: DataTypes.STRING,
+    // }
 }, {
     tableName: 'users',
     timestamps: true, // Enables createdAt and updatedAt fields
 });
+
 
 
 
